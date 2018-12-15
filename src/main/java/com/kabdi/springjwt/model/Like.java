@@ -25,7 +25,6 @@ public class Like implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	int id;
-
 	@ManyToOne(optional=false)
 //	@JoinColumn(name="likerId",insertable=false, updatable=false)
 	private User liker;

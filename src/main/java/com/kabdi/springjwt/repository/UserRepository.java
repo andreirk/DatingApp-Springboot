@@ -31,17 +31,22 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
     		countQuery="select count(u) from User u where u.gender = :gender and u.dateOfBirth >= :minDob and u.dateOfBirth <= :maxDob")
     Page<User> findUsersLastActive(@Param("gender") String gender, @Param("minDob") Date minDob, @Param("maxDob") Date maxDob, Pageable pageable);
     
-    @Query(value="select u from User u left join fetch u.photos p where u.gender = :gender and u.dateOfBirth >= :minDob and u.dateOfBirth <= :maxDob order by u.created desc",
+    @Query(value=             "select u from User u left join fetch u.photos p where u.gender = :gender and u.dateOfBirth >= :minDob and u.dateOfBirth <= :maxDob order by u.created desc",
     		countQuery="select count(u) from User u left join u.photos p where u.gender = :gender and u.dateOfBirth >= :minDob and u.dateOfBirth <= :maxDob")
     Page<User> findUsersCreated(@Param("gender") String gender, @Param("minDob") Date minDob, 
     		@Param("maxDob") Date maxDob, Pageable pageable);
         
-    @Query(value="select u from User u left join fetch u.photos p join u.likers l where l.liker.id = :id order by u.created desc",
-    		countQuery="select count(u) from User u left join u.photos p join u.likers l where l.liker.id = :id")
+    /*@Query(value =        "select u from User u left join u.likers l left join Photo p where u.id = l.liker.id and p.user.id = u.id and u.id = :id order by u.created desc",
+      countQuery = "select count(u) from User u left join u.likers l left join Photo p where u.id = l.liker.id and p.user.id = u.id and u.id = :id")*/
+    @Query(value ="select * from users u left join likes l on u.id = l.liker_id left join photos p on p.user_id = u.id where l.likee_id =:id order by u.created desc", 
+      countQuery = "select count(u) from users u left join likes l on u.id = l.liker_id left join photos p on p.user_id = u.id where l.likee_id =:id", nativeQuery = true)
     Page<User> findUsersLikers(@Param("id") int id, Pageable pageable);
     
-    @Query(value = "select u from User u join fetch u.photos p join u.likees l where l.likee.id = :id order by u.created desc",
-   	  countQuery = "select count(u) from User u join u.photos p join u.likees l where l.likee.id = :id")
+    @Query(value="select u from users u left join likes l on u.id = l.likee_id left join photos p on p.user_id = u.id where l.liker_id=:id order by u.created desc", 
+    countQuery = "select count(u) from users u left join likes l on u.id = l.likee_id left join photos p on p.user_id = u.id where l.liker_id=:id", nativeQuery = true)
+        
+   /* @Query(value =        "select u from User u left join u.likees l left join Photo p where u.id = l.likee.id and p.user.id = u.id and u.id = :id order by u.created desc",
+      countQuery = "select count(u) from User u left join u.likees l left join Photo p where u.id = l.likee.id and p.user.id = u.id and u.id = :id")*/
     Page<User> findUsersLikees(@Param("id") int id, Pageable pageable);
     
     @Modifying

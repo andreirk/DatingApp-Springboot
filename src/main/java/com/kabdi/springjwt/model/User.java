@@ -77,7 +77,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy="likee", fetch=FetchType.LAZY)
     private Collection<Like> likees;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

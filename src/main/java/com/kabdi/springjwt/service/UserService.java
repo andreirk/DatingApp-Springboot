@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 
 import com.kabdi.springjwt.dtos.UserForDetailedDto;
 import com.kabdi.springjwt.dtos.UserForListDto;
@@ -23,6 +25,7 @@ import com.kabdi.springjwt.payload.ApiResponse;
 import com.kabdi.springjwt.payload.PaginationResult;
 
 @Service
+@Transactional
 public class UserService extends DatingService implements IUserService {
 
 	
@@ -56,7 +59,6 @@ public class UserService extends DatingService implements IUserService {
 				return new ApiResponse("Minimum age and Maximum age should be between 18 and 99!", HttpStatus.BAD_REQUEST);
 			}
 			if (StringUtils.equals((String) params.get("orderBy"), "created")) {
-				//List<User> users1 = userRepository.findAll();
 				usersEntities = userRepository.findUsersCreated(gender, getMinDobDate((Integer) params.get("maxAge")), getMaxDobDate((Integer) params.get("minAge")),
 						pageableRequest);
 			} else {
@@ -70,7 +72,7 @@ public class UserService extends DatingService implements IUserService {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.set("Pagination", paginationResult.toJson());
 		List<User> users = usersEntities.getContent();
-		List<UserForListDto> userForListDto = customListConverter.map(dozerBeanMapper, users, UserForListDto.class);
+		List<UserForListDto> userForListDto = userMapper.mapListUserToUserForListDto(users);
 		//return ResponseEntity.status(HttpStatus.OK).headers(responseHeaders).body(userForListDto);
 		return new ApiResponse(HttpStatus.OK, responseHeaders, userForListDto);
 	}

@@ -4,6 +4,8 @@ package com.kabdi.springjwt.dtos;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 
 public class PhotoForReturnDto implements Serializable {
@@ -21,6 +23,7 @@ public class PhotoForReturnDto implements Serializable {
 	
 	private Date dateAdded;
 	
+	@JsonProperty("isMain")
 	private boolean isMain;
 	
 	private String publicId;
