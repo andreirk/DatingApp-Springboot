@@ -42,7 +42,7 @@ public class MessagesController {
 	public ResponseEntity<?> getMessagesForUser(@PathVariable int userId,
 			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
-			@RequestParam(name = "messageContainer", defaultValue = "Unread") String messageContainer,
+			@RequestParam(name = "MessageContainer", defaultValue = "Unread") String messageContainer,
 			HttpServletRequest request) {
 
 		

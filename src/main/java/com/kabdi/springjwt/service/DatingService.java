@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.kabdi.springjwt.helper.CustomListConverter;
+import com.kabdi.springjwt.helper.MessageMapper;
 import com.kabdi.springjwt.helper.UserMapper;
 import com.kabdi.springjwt.payload.ApiResponse;
 import com.kabdi.springjwt.repository.LikeRepository;
@@ -38,6 +39,9 @@ public class DatingService {
 	
 	@Autowired
 	UserMapper userMapper;
+	
+	@Autowired
+	MessageMapper messageMapper;
 
 	@Autowired
 	DozerBeanMapper dozerBeanMapper;

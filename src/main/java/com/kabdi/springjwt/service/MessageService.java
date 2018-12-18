@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
-
+import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +18,12 @@ import com.kabdi.springjwt.dtos.MessageForCreationDto;
 import com.kabdi.springjwt.dtos.MessageToReturnDto;
 import com.kabdi.springjwt.model.Message;
 import com.kabdi.springjwt.model.Photo;
+import com.kabdi.springjwt.model.User;
 import com.kabdi.springjwt.payload.ApiResponse;
 import com.kabdi.springjwt.payload.PaginationResult;
 
 @Service
+@Transactional
 public class MessageService extends DatingService implements IMessageService {
 
 
@@ -90,7 +92,10 @@ public class MessageService extends DatingService implements IMessageService {
 	@Override
 	public ApiResponse<?> getMessagesForUser(int userId, String messageContainer, Pageable pageableRequest, HttpServletRequest request) {
 
-		if(!userRepository.existsById(userId)){
+		Boolean isRecipient = true;
+		
+		User user = userRepository.findOneWithMainPhoto(userId);
+		if(user == null){
 			return new ApiResponse<>("User not found", HttpStatus.NOT_FOUND);
 		}
 
@@ -100,13 +105,14 @@ public class MessageService extends DatingService implements IMessageService {
 		}
 		
 		Page<Message> messagesEntities = null;
-
+	
 		switch (messageContainer) {
 		case "Inbox":
 			messagesEntities = messageRepository.findMessagesInForUser(userId, pageableRequest);
 			break;
-		case "Out":
+		case "Outbox":
 			messagesEntities = messageRepository.findMessagesOutForUser(userId, pageableRequest);
+			isRecipient = false;
 			break;
 		default:
 			messagesEntities = messageRepository.findMessagesDefaultForUser(userId, pageableRequest);
@@ -117,8 +123,9 @@ public class MessageService extends DatingService implements IMessageService {
 				messagesEntities.getSize(), (int) messagesEntities.getTotalElements(),
 				messagesEntities.getTotalPages());
 		List<Message> messages = messagesEntities.getContent();
-		List<MessageToReturnDto> messagesListDto = customListConverter.map(dozerBeanMapper, messages,
-				MessageToReturnDto.class);
+		List<MessageToReturnDto> messagesListDto = messageMapper.mapListMessageToMessageToReturnDto(messages, user, isRecipient);
+/*		List<MessageToReturnDto> messagesListDto = customListConverter.map(dozerBeanMapper, messages,
+				MessageToReturnDto.class);*/
 		
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.set("Pagination", paginationResult.toJson());

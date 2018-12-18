@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +30,7 @@ public class UsersController {
 
 	@GetMapping
 	//@CrossOrigin(origins = "http://localhost:4200")
-	public ResponseEntity<?> GetUsers(@RequestParam(name = "gender", required = false) String gender,
+	public ResponseEntity<?> getUsers(@RequestParam(name = "gender", required = false) String gender,
 			@RequestParam(name = "minAge", defaultValue = "18") int minAge,
 			@RequestParam(name = "maxAge", defaultValue = "99") int maxAge,
 			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
@@ -59,7 +58,7 @@ public class UsersController {
 	}
 
 	@GetMapping("{id}")
-	public ResponseEntity<?> GetUser(@PathVariable int id, HttpServletRequest request) {
+	public ResponseEntity<?> getUser(@PathVariable int id, HttpServletRequest request) {
 
 		ApiResponse<?> apiResponse = userService.getUser(id, request);
 
@@ -67,7 +66,7 @@ public class UsersController {
 	}
 
 	@PutMapping("{id}")
-	public ResponseEntity<?> UpdateUser(@PathVariable int id, @RequestBody UserForUpdateDto userForUpdateDto,
+	public ResponseEntity<?> udateUser(@PathVariable int id, @RequestBody UserForUpdateDto userForUpdateDto,
 			HttpServletRequest request) {
 
 		ApiResponse<?> apiResponse = userService.updateUser(id, userForUpdateDto, request);

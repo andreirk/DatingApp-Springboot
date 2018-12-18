@@ -21,17 +21,35 @@ import javax.transaction.Transactional;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Integer>, JpaSpecificationExecutor<Message> {
 
-	@Query(value="select m from Message m join fetch m.recipient r join fetch r.photos p where p.isMain is TRUE and r.id = :userId and m.recipientDeleted is FALSE order by m.messageSent desc",
-			countQuery="select count(m) from Message m join m.recipient r join r.photos p where p.isMain is TRUE and r.id = :userId and m.recipientDeleted is FALSE")
+	@Query(value="select * from messages m  " +
+			" left join users u on m.recipient_id=u.id  " +
+			" left join photos pr on m.recipient_id=pr.id " + 
+			" left join photos ps on m.sender_id=ps.id  " +
+			" where  m.recipient_id=:userId and m.recipient_deleted is FALSE " +
+			" and (pr.id is null or pr.is_main is true) " +
+			" and (ps.id is null or ps.is_main is true)", nativeQuery = true)
+
 	Page<Message> findMessagesInForUser(@Param("userId") int userId, Pageable pageableRequest); 
 	
-	@Query(value="select m from Message m join fetch m.sender s join fetch m.recipient where s.id = :userId and m.senderDeleted is FALSE order by m.messageSent desc",
-			countQuery="select count(m) from Message m join m.sender s where s.id = :userId and m.senderDeleted is FALSE")
-//	@Query("select m from Message m join m.sender s where s.id = :userId and m.senderDeleted is FALSE order by m.messageSent desc")
+	@Query(value="select * from messages m " + 
+			" left join users u on m.sender_id=u.id " + 
+			" left join photos pr on m.recipient_id=pr.id " + 
+			" left join photos ps on m.sender_id=ps.id  " +
+			" where m.sender_id=:userId and m.sender_deleted is FALSE " +
+			" and (pr.id is null or pr.is_main is true) " +
+			" and (ps.id is null or ps.is_main is true) " +
+			" order by m.message_sent desc", nativeQuery = true)
+	
 	Page<Message> findMessagesOutForUser(@Param("userId") int userId, Pageable pageableRequest); 
 	
-	@Query(value="select m from Message m join fetch m.sender s join fetch m.recipient r where r.id = :userId and m.recipientDeleted is FALSE and m.isRead is FALSE order by m.messageSent desc",
-			countQuery="select count(m) from Message m join m.sender s join m.recipient r where r.id = :userId and m.recipientDeleted is FALSE and m.isRead is FALSE")
+	@Query(value="select * from messages m  " +
+			" left join users u on m.recipient_id=u.id  " +
+			" left join photos pr on m.recipient_id=pr.id " + 
+			" left join photos ps on m.sender_id=ps.id  " +
+			" where  m.recipient_id=:userId and m.recipient_deleted is FALSE and m.is_read is FALSE " +
+			" and (pr.id is null or pr.is_main is true) " +
+			" and (ps.id is null or ps.is_main is true) order by m.message_sent desc ", nativeQuery = true)
+	
 	Page<Message> findMessagesDefaultForUser(@Param("userId") int userId, Pageable pageableRequest); 
    
 	@Query("select m from Message m join fetch m.recipient r join fetch m.sender s where r.id = :userId and m.recipientDeleted is FALSE and s.id = :recipientId " +

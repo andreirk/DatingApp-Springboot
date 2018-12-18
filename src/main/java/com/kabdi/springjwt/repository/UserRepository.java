@@ -54,6 +54,9 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
     @Query("select user from User user left join fetch user.photos where user.username =:username")
     Optional<User> findOneWithPhotos(@Param("username") String username);
     
+    @Query(value="select * from users u left join photos p on u.id=p.user_id where u.id =:userId and (p.id is null or p.is_main is true)", nativeQuery = true)
+    User findOneWithMainPhoto(@Param("userId") int userId);
+    
     @Query("select user.knownAs from User user where user.id =:userId")
 	String findKnownAsForUser(@Param("userId") int userId);
     

@@ -73,8 +73,6 @@ public class AuthController {
         UserForListDto user = dozerBeanMapper.map(userFromRepo.get(), UserForListDto.class);
         String token = tokenProvider.generateToken(authentication);
         return ResponseEntity.ok(new UserForListDtoWrapper(token, user));
-        //return ResponseEntity.ok(userForListDto);
-        //return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
     @PostMapping("/register")
