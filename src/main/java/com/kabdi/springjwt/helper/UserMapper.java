@@ -1,25 +1,19 @@
 package com.kabdi.springjwt.helper;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
+
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.collections.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import com.kabdi.springjwt.dtos.PhotosForDetailedDto;
+
 import com.kabdi.springjwt.dtos.UserForDetailedDto;
 import com.kabdi.springjwt.dtos.UserForListDto;
-import com.kabdi.springjwt.model.Photo;
 import com.kabdi.springjwt.model.User;
 
-@Service
-public class UserMapper {
+@Component
+public class UserMapper extends DatingMapper {
 
 	@Autowired
 	PhotoMapper photoMapper;
@@ -72,7 +66,7 @@ public class UserMapper {
 		return userForListDtoList;
 	}
 
-	public String getMainPhoto(User user) {
+	/*public String getMainPhoto(User user) {
 		if (user != null) {
 			Collection<Photo> photos = user.getPhotos();
 			if(photos != null) {
@@ -95,5 +89,5 @@ public class UserMapper {
 		}
 		return null;
 	}
-
+*/
 }

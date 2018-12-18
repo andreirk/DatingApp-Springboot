@@ -23,7 +23,6 @@ import com.kabdi.springjwt.helper.PhotoConverter;
 import com.kabdi.springjwt.model.Message;
 import com.kabdi.springjwt.model.Photo;
 import com.kabdi.springjwt.model.User;
-import com.kabdi.springjwt.payload.SignUpRequest;
 
 @Configuration
 public class MappingConfig {
@@ -36,7 +35,6 @@ public class MappingConfig {
             	mapping(User.class, UserForListDto.class)
             	.fields("photos", "photoUrl", customConverter(PhotoConverter.class))
             	.fields("dateOfBirth", "age", customConverter(CustomAgeConverter.class));
-            	mapping(SignUpRequest.class, User.class);
                 mapping(User.class, UserForDetailedDto.class).fields("dateOfBirth", "age", customConverter(CustomAgeConverter.class))
                 .fields("photos", "photoUrl", customConverter(PhotoConverter.class))
                 .exclude("likees").exclude("likers").exclude("roles");

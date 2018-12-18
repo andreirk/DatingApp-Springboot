@@ -3,12 +3,12 @@ package com.kabdi.springjwt.helper;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.kabdi.springjwt.dtos.PhotosForDetailedDto;
 import com.kabdi.springjwt.model.Photo;
 
-@Service
+@Component
 public class PhotoMapper {
 	
 	public PhotosForDetailedDto mapPhotoToPhotosForDetailedDto(Photo photo){
