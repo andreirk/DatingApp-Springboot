@@ -23,8 +23,8 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, JpaS
 
 	@Query(value="select * from messages m  " +
 			" left join users u on m.recipient_id=u.id  " +
-			" left join photos pr on m.recipient_id=pr.id " + 
-			" left join photos ps on m.sender_id=ps.id  " +
+			" left join photos pr on m.recipient_id=pr.user_id " + 
+			" left join photos ps on m.sender_id=ps.user_id  " +
 			" where  m.recipient_id=:userId and m.recipient_deleted is FALSE " +
 			" and (pr.id is null or pr.is_main is true) " +
 			" and (ps.id is null or ps.is_main is true)", nativeQuery = true)
@@ -33,8 +33,8 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, JpaS
 	
 	@Query(value="select * from messages m " + 
 			" left join users u on m.sender_id=u.id " + 
-			" left join photos pr on m.recipient_id=pr.id " + 
-			" left join photos ps on m.sender_id=ps.id  " +
+			" left join photos pr on m.recipient_id=pr.user_id " + 
+			" left join photos ps on m.sender_id=ps.user_id  " +
 			" where m.sender_id=:userId and m.sender_deleted is FALSE " +
 			" and (pr.id is null or pr.is_main is true) " +
 			" and (ps.id is null or ps.is_main is true) " +
@@ -44,8 +44,8 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, JpaS
 	
 	@Query(value="select * from messages m  " +
 			" left join users u on m.recipient_id=u.id  " +
-			" left join photos pr on m.recipient_id=pr.id " + 
-			" left join photos ps on m.sender_id=ps.id  " +
+			" left join photos pr on m.recipient_id=pr.user_id " + 
+			" left join photos ps on m.sender_id=ps.user_id  " +
 			" where  m.recipient_id=:userId and m.recipient_deleted is FALSE and m.is_read is FALSE " +
 			" and (pr.id is null or pr.is_main is true) " +
 			" and (ps.id is null or ps.is_main is true) order by m.message_sent desc ", nativeQuery = true)

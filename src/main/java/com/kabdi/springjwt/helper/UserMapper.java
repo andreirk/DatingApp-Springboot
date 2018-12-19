@@ -33,7 +33,7 @@ public class UserMapper extends DatingMapper {
 		userForDetailedDto.setIntroduction(user.getIntroduction());
 		userForDetailedDto.setLookingFor(user.getLookingFor());
 		userForDetailedDto.setInterests(user.getInterests());
-		userForDetailedDto.setPhotoUrl(getMainPhoto(user));
+		userForDetailedDto.setPhotoUrl(getMainPhotoUrl(user));
 		userForDetailedDto.setPhotos(photoMapper.mapListPhotoToPhotosForDetailedDto(user.getPhotos()));
 
 		return userForDetailedDto;
@@ -51,7 +51,7 @@ public class UserMapper extends DatingMapper {
 		userForListDto.setLastActive(user.getLastActive());
 		userForListDto.setCity(user.getCity());
 		userForListDto.setCountry(user.getCountry());
-		userForListDto.setPhotoUrl(getMainPhoto(user));
+		userForListDto.setPhotoUrl(getMainPhotoUrl(user));
 
 		return userForListDto;
 	}

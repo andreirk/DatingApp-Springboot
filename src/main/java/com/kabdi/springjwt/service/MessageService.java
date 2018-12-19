@@ -1,6 +1,6 @@
 package com.kabdi.springjwt.service;
 
-import java.util.Collection;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.kabdi.springjwt.dtos.MessageForCreationDto;
 import com.kabdi.springjwt.dtos.MessageToReturnDto;
 import com.kabdi.springjwt.model.Message;
-import com.kabdi.springjwt.model.Photo;
 import com.kabdi.springjwt.model.User;
 import com.kabdi.springjwt.payload.ApiResponse;
 import com.kabdi.springjwt.payload.PaginationResult;
@@ -44,28 +43,16 @@ public class MessageService extends DatingService implements IMessageService {
 			return new ApiResponse<>("Could not find recipient user", HttpStatus.NOT_FOUND);
 		}
 		
-		messageForCreationDto.setSenderId(userId);
-
-		String senderKnownAs = userRepository.findKnownAsForUser(userId);
-		String senderPhotoUrl = photoRepository.findMainPhotoUrlForUser(userId);
-		String recipientKnownAs = userRepository.findKnownAsForUser(messageForCreationDto.getRecipientId());
-		String recipientPhotoUrl = photoRepository.findMainPhotoUrlForUser(messageForCreationDto.getRecipientId());
-
+		User sender = userRepository.findOneWithMainPhoto(userId);
+		User recipient = userRepository.findOneWithMainPhoto(messageForCreationDto.getRecipientId());
+		messageForCreationDto.setSenderId(userId);	
+		
 		Message message = dozerBeanMapper.map(messageForCreationDto, Message.class);
 		messageRepository.save(message);
-		MessageToReturnDto messageToReturnDto;
-		messageToReturnDto = dozerBeanMapper.map(message, MessageToReturnDto.class);
-		messageToReturnDto.setSenderKnownAs(senderKnownAs);
-		messageToReturnDto.setSenderPhotoUrl(senderPhotoUrl);
-		messageToReturnDto.setRecipientKnownAs(recipientKnownAs);
-		messageToReturnDto.setRecipientPhotoUrl(recipientPhotoUrl);
+		MessageToReturnDto messageToReturnDto = messageMapper.mapMessageForCreationDtoToMessageToReturnDto(message, sender, recipient);
 
 		return new ApiResponse<>(messageToReturnDto, HttpStatus.OK);
 
-	}
-
-	public String findMainPhoto(Collection<Photo> photos) {
-		return photos.stream().filter(p -> p.isMain() == true).findFirst().map(Photo::getUrl).orElse(null);
 	}
 	
 	@Override
@@ -145,22 +132,11 @@ public class MessageService extends DatingService implements IMessageService {
 			return new ApiResponse<>("User not authorized", HttpStatus.UNAUTHORIZED);
 		}
 		
+		User sender = userRepository.findOneWithMainPhoto(userId);
+		User recipient = userRepository.findOneWithMainPhoto(recipientId);
+		
 		List<Message> messages = messageRepository.getMessageThread(userId, recipientId);
-		List<MessageToReturnDto> messagesListDto = customListConverter.map(dozerBeanMapper, messages,
-				MessageToReturnDto.class);
-
-		String senderPhotoUrl = photoRepository.findMainPhotoUrlForUser(userId);
-		String recipientPhotoUrl = photoRepository.findMainPhotoUrlForUser(recipientId);
-
-		for (MessageToReturnDto messageToReturnDto : messagesListDto) {
-			if (messageToReturnDto.getSenderId() == userId) {
-				messageToReturnDto.setSenderPhotoUrl(senderPhotoUrl);
-				messageToReturnDto.setRecipientPhotoUrl(recipientPhotoUrl);
-			} else if (messageToReturnDto.getSenderId() == recipientId) {
-				messageToReturnDto.setSenderPhotoUrl(recipientPhotoUrl);
-				messageToReturnDto.setRecipientPhotoUrl(senderPhotoUrl);
-			}
-		}
+		List<MessageToReturnDto> messagesListDto = messageMapper.mapListMessageToMessageToReturnDto(messages, sender, recipient);
 
 		return new ApiResponse<>(messagesListDto, HttpStatus.OK);
 	}

@@ -6,14 +6,19 @@ import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Date;
 
+import org.dozer.DozerBeanMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.kabdi.springjwt.model.Photo;
 import com.kabdi.springjwt.model.User;
 
 public class DatingMapper {
 	
+	@Autowired
+	DozerBeanMapper dozerBeanMapper;
 	
-	public String getMainPhoto(User user) {
+	
+	/*public String getMainPhoto(User user) {
 		if (user != null) {
 			Collection<Photo> photos = user.getPhotos();
 			if(photos != null) {
@@ -25,7 +30,17 @@ public class DatingMapper {
 			}
 		}
 		return null;
+	}*/
+	
+	public String getMainPhotoUrl(User user) {
+		if(user != null) {
+			Collection<Photo> photos = user.getPhotos();
+			return photos.stream().filter(p -> p.isMain() == true).findFirst().map(Photo::getUrl).orElse(null);
+		}
+		return null;
+		
 	}
+	
 
 	public Integer calculateAge(Date dateOfBirth) {
 
