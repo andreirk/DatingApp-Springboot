@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import com.kabdi.springjwt.dtos.MessageForCreationDto;
 import com.kabdi.springjwt.dtos.MessageToReturnDto;
 import com.kabdi.springjwt.dtos.PhotoForReturnDto;
+import com.kabdi.springjwt.dtos.PhotosForDetailedDto;
 import com.kabdi.springjwt.dtos.UserForDetailedDto;
 import com.kabdi.springjwt.dtos.UserForListDto;
 import com.kabdi.springjwt.dtos.UserForLoginDto;
@@ -42,6 +43,7 @@ public class MappingConfig {
                 .exclude("lastActive").exclude("password").exclude("photos").exclude("messagesSent").exclude("messagesReceived").exclude("likers")
                 .exclude("likees").exclude("roles");
                 mapping(Photo.class, PhotoForReturnDto.class);
+                mapping(Photo.class, PhotosForDetailedDto.class);
                 mapping(User.class, UserForLoginDto.class);
                 mapping(Message.class, MessageToReturnDto.class).fields("sender.id", "senderId")
                 .fields("recipient.id", "recipientId").fields("sender.knownAs", "senderKnownAs").fields("recipient.knownAs", "recipientKnownAs");

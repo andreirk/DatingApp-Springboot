@@ -9,16 +9,11 @@ import com.kabdi.springjwt.dtos.PhotosForDetailedDto;
 import com.kabdi.springjwt.model.Photo;
 
 @Component
-public class PhotoMapper {
+public class PhotoMapper extends DatingMapper {
 	
 	public PhotosForDetailedDto mapPhotoToPhotosForDetailedDto(Photo photo){
 		
-		PhotosForDetailedDto photosForDetailedDto = new PhotosForDetailedDto();
-		photosForDetailedDto.setId(photo.getId());
-		photosForDetailedDto.setUrl(photo.getUrl());
-		photosForDetailedDto.setDescription(photo.getDescription());
-		photosForDetailedDto.setDateAdded(photo.getDateAdded());
-		photosForDetailedDto.setMain(photo.isMain());
+		PhotosForDetailedDto photosForDetailedDto = dozerBeanMapper.map(photo, PhotosForDetailedDto.class);
 		
 		return photosForDetailedDto;
 	}

@@ -72,8 +72,7 @@ public class MessageMapper extends DatingMapper {
 		messageToReturnDto.setSenderPhotoUrl(getMainPhotoUrl(sender));
 		messageToReturnDto.setRecipientKnownAs(recipient.getKnownAs());
 		messageToReturnDto.setRecipientPhotoUrl(getMainPhotoUrl(recipient));
-		
-		
+			
 		return messageToReturnDto;
 	}
 
